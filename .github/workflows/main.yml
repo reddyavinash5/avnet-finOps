@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: main  # Specify the branch you want to checkout
-          path: '../avnet-finOps'  
+          path: '../avnet-finOps/terraform'  
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
