@@ -266,18 +266,9 @@ resource "azurerm_subscription_policy_assignment" "budgetassignment" {
   })
 }
 
-
-
 resource "azurerm_role_assignment" "testuserid" {
   scope              = var.subscription_id
   role_definition_id = "${var.subscription_id}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
   principal_id       = azurerm_subscription_policy_assignment.budgetassignment.identity[0].principal_id
-
-}
-
-resource "azurerm_subscription_policy_remediation" "testing" {
-  name = "rest"
-  subscription_id = var.subscription_id
-  policy_assignment_id = azurerm_subscription_policy_assignment.budgetassignment.id
 
 }
