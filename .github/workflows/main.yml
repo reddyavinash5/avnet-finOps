@@ -13,7 +13,7 @@ permissions:
 jobs:
   terraform:
     name: Deploy
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     environment: Sythronic-Demo
     env:
       working-directory: ./terraform
