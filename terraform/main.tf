@@ -3,6 +3,15 @@ provider "azurerm" {
   use_msi = true
 }
 
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "budget-demo"
+    storage_account_name  = "bdgdemostrg"
+    container_name        = "tflogs"
+    key                   = "terraform.tfstate"
+  }
+}
+
 resource "azurerm_policy_definition" "budget" {
   name         = "Demo-Budget-Policy"
   display_name = "Demo-Budget-Policy"
