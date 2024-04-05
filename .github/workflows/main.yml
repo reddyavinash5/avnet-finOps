@@ -35,6 +35,10 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
+      - name: Configure Terraform Backend
+        run: terraform init -backend-config="resource_group_name=budget-demo" -backend-config="storage_account_name=bdgdemostrg" -backend-config="container_name=tflogs" -backend-config="key=terraform.tfstate"
+        working-directory: ${{ env.working-directory }}
+        
           # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
