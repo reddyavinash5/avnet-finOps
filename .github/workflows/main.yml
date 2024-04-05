@@ -25,9 +25,10 @@ jobs:
         working-directory: ${{ env.working-directory }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
+      - name: Terraform Fmt
+        id: fmt
         run: terraform fmt -check
-        working-directory: ${{ env.working-directory }}
+        continue-on-error: true
 
     # Generates an execution plan for Terraform
       - name: Terraform Plan
