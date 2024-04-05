@@ -10,12 +10,11 @@ jobs:
   terraform:
     name: Deploy
     runs-on: ubuntu-latest
+    env:
+      working-directory: terraform
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          ref: main  # Specify the branch you want to checkout
-          path: './terraform/'  
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
@@ -23,17 +22,21 @@ jobs:
           # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
         run: terraform init
+        working-directory: ${{ env.working-directory }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
         run: terraform fmt -check
+        working-directory: ${{ env.working-directory }}
 
     # Generates an execution plan for Terraform
       - name: Terraform Plan
         run: terraform plan -input=false
+        working-directory: ${{ env.working-directory }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: ${{ env.working-directory }}
         env:
           ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
           ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
