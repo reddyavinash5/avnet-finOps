@@ -1,5 +1,6 @@
 provider "azurerm" {
   features {}
+  use_msi = true
 }
 
 resource "azurerm_policy_definition" "budget" {
