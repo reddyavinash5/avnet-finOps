@@ -10,7 +10,7 @@ jobs:
   terraform:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: prd
+    environment: Sythronic-Demo
     env:
       working-directory: terraform
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
