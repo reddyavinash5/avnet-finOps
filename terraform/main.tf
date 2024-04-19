@@ -237,12 +237,12 @@ PARAMETERS
 POLICY_RULE
 }
 
-resource "azurerm_subscription_policy_assignment" "budgetassignment" {
+resource "azurerm_management_group_policy_assignment" "budgetassignment" {
   name                 = "budget-assignment"
-  subscription_id = var.subscription_id
+  management_group_id = var.management_group_id
   policy_definition_id = azurerm_policy_definition.budget.id
-  description          = "Deploy budgets to subscriptions"
-  display_name         = "Deploy budgets to subscriptions"
+  description          = "Deploy budgets to management group"
+  display_name         = "Deploy budgets to management group"
 
   identity {
     type = "SystemAssigned"
@@ -265,7 +265,7 @@ resource "azurerm_subscription_policy_assignment" "budgetassignment" {
 }
 
 resource "azurerm_role_assignment" "testuserid" {
-  scope              = var.subscription_id
+  scope              = var.management_group_id
   role_definition_id = "${var.subscription_id}/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
   principal_id       = azurerm_subscription_policy_assignment.budgetassignment.identity[0].principal_id
 

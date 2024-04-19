@@ -39,6 +39,11 @@ variable "time_grain" {
   default = "Monthly"
 }
 
+variable "management_group_id" {
+  type = string
+  default = ""
+}
+
 # variable "start_date" {
 #   type = string
 #   default = "2024-04-01"
@@ -64,10 +69,6 @@ variable "time_grain" {
 #   default = ["avinash.reddy@insight.com"]
 # }
 
-variable "subscription_id" {
-  type = string
-  default = "/subscriptions/484a2fa1-7baf-4e72-abac-a6c26d84f242"
-}
 
 # variable "contact_roles" {
 #   type        = list(string)
