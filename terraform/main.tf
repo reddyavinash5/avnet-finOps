@@ -12,6 +12,14 @@ terraform {
   }
 }
 
+locals {
+  common_notification = {
+    "enabled"       = true,
+    "operator"      = "GreaterThan",
+    "contactEmails" = var.default_values.contactEmails
+  }
+}
+
 resource "azurerm_policy_definition" "budget" {
   name         = "Demo-Budget-Policy"
   display_name = "Demo-Budget-Policy"
@@ -39,7 +47,7 @@ METADATA
   },
   "timeGrain": {
     "type": "string",
-    "defaultValue": "Monthly",
+    "defaultValue": var.default_values["timeGrain"],
     "allowedValues": ["Monthly", "Quarterly", "Annually", "BillingMonth", "BillingQuarter", "BillingAnnual"],
     "metadata": {
       "description": "The time covered by a budget. Tracking of the amount will be reset based on the time grain."
@@ -66,14 +74,14 @@ METADATA
   },
   "startDate": {
     "type": "string",
-    "defaultValue" : "2024-04-01",
+    "defaultValue" : var.default_values["startDate"],
     "metadata": {
       "description": "The start date for the budget"
     }
   },
   "endDate": {
     "type": "string",
-    "defaultValue" : "2024-04-30",
+    "defaultValue" : var.default_values["endDate"],
     "metadata": {
       "description": "The end date for the budget"
     }
@@ -82,18 +90,16 @@ METADATA
     "type": "Array",
     "metadata": {
       "description": "The list of email addresses, in an array, to send the budget notification to when the threshold is exceeded."
-    }
+    },
+    "defaultValue": var.default_values["contactEmails"]
   },
   "contactRoles": {
     "type": "Array",
     "metadata": {
-      "displayName": "contactRoles",
+      "displayName": "contactRoles"
       "description": "The list of contact RBAC roles, in an array, to send the budget notification to when the threshold is exceeded."
     },
-    "defaultValue": [
-      "Owner",
-      "Contributor"
-    ]
+    "defaultValue": var.default_values["contactRoles"]
   },
   "contactGroups": {
     "type": "Array",
@@ -101,13 +107,11 @@ METADATA
       "displayName": "contactGroups",
       "description": "The list of action groups, in an array, to send the budget notification to when the threshold is exceeded. It accepts an array of strings."
     },
-    "defaultValue": [
-      "budget-agroup"
-    ]
+    "defaultValue": var.default_values["contactGroups"]
   },
   "effect": {
     "type": "String",
-    "defaultValue": "DeployIfNotExists",
+    "defaultValue": var.default_values["effect"],
     "allowedValues": ["DeployIfNotExists", "AuditIfNotExists", "Disabled"],
     "metadata": {
       "description": "Enable or disable the execution of the policy"
@@ -214,17 +218,11 @@ PARAMETERS
                   "amount": "[parameters('amount')]",
                   "category": "Cost",
                   "notifications": {
-                    "NotificationForExceededBudget1": {
-                      "enabled": true,
-                      "operator": "GreaterThan",
-                      "threshold": "[parameters('firstThreshold')]",
-                      "contactEmails": "[parameters('contactEmails')]"
+                    "NotificationForExceededBudget1": merge(local.common_notification, {
+                      "threshold": "[parameters('firstThreshold')]"
                     },
-                    "NotificationForExceededBudget2": {
-                      "enabled": true,
-                      "operator": "GreaterThan",
-                      "threshold": "[parameters('secondThreshold')]",
-                      "contactEmails": "[parameters('contactEmails')]"
+                    "NotificationForExceededBudget2": merge(local.common_notification, {
+                      "threshold": "[parameters('secondThreshold')]"
                     }
                   }
                 }
@@ -255,14 +253,14 @@ resource "azurerm_subscription_policy_assignment" "budgetassignment" {
     "budgetName"      = { "value" = var.budget_name },
     "amount"          = { "value" = var.amount },
     "timeGrain"       = { "value" = var.time_grain },
-    "startDate"       = { "value" = var.start_date },
-    "endDate"         = { "value" = var.end_date },
-    "firstThreshold"  = { "value" = var.first_threshold },
-    "secondThreshold" = { "value" = var.second_threshold },
-    "contactEmails"   = { "value" = var.contact_emails },
-    "contactRoles"    = { "value" = var.contact_roles },
-    "contactGroups"   = { "value" = var.contact_groups },
-    "effect"          = { "value" = "DeployIfNotExists" }, # Add this line for the effect parameter
+    "startDate"       = { "value" = var.default_values.startDate },
+    "endDate"         = { "value" = var.default_values.endDate },
+    "firstThreshold"  = { "value" = var.thresholds.firstThreshold },
+    "secondThreshold" = { "value" = var.thresholds.secondThreshold },
+    "contactEmails"   = { "value" = var.default_values.contactEmails },
+    "contactRoles"    = { "value" = var.default_values.contactRoles },
+    "contactGroups"   = { "value" = var.default_values.contactGroups },
+    "effect"          = { "value" = var.default_values.effect }, # Add this line for the effect parameter
   })
 }
 
